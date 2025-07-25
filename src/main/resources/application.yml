@@ -1,0 +1,23 @@
+
+spring:
+    application:
+      name: myfurniture
+    datasource:
+      url: jdbc:mysql://localhost:3306/my_furniture
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
+jwt:
+    signerKey: "NSnhIs2u8vSGepfYEnxE7RO32/Ox8EKxZTHdAS3iI6DpWJJEnysdiyCGu9h14HT8"
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
