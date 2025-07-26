@@ -30,7 +30,7 @@ public class ApiEndPoint {
             "/users/delete/{userId}",
 
             // login url
-            "/auth/login",
+            "/authenticate/login",
 
             // Product url
             "/products",

@@ -1,8 +1,8 @@
 package com.example.myfurniture.mapper;
 
 import com.example.myfurniture.dto.response.ProductResponse;
-import com.example.myfurniture.dto.resquest.ProductCreationReq;
-import com.example.myfurniture.dto.resquest.ProductUpdateReq;
+import com.example.myfurniture.dto.request.ProductCreationReq;
+import com.example.myfurniture.dto.request.ProductUpdateReq;
 import com.example.myfurniture.entity.Product;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;

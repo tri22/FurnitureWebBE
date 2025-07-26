@@ -2,8 +2,8 @@ package com.example.myfurniture.controller;
 
 import com.example.myfurniture.dto.response.ApiResponse;
 import com.example.myfurniture.dto.response.UserResponse;
-import com.example.myfurniture.dto.resquest.UserCreationReq;
-import com.example.myfurniture.dto.resquest.UserUpdateReq;
+import com.example.myfurniture.dto.request.UserCreationReq;
+import com.example.myfurniture.dto.request.UserUpdateReq;
 import com.example.myfurniture.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static java.util.stream.Stream.builder;
 
 @RestController
 @RequestMapping("/users")

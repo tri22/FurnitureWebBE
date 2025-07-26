@@ -1,54 +1,59 @@
 package com.example.myfurniture.controller;
 
-import com.example.myfurniture.dto.response.ApiResponse;
+
+import com.example.myfurniture.configuration.JWTAuthenticationFilter;
 import com.example.myfurniture.dto.response.ProductResponse;
-import com.example.myfurniture.dto.response.UserResponse;
-import com.example.myfurniture.dto.resquest.ProductCreationReq;
-import com.example.myfurniture.dto.resquest.ProductUpdateReq;
+import com.example.myfurniture.dto.request.ProductCreationReq;
+import com.example.myfurniture.dto.request.ProductUpdateReq;
+import com.example.myfurniture.entity.Product;
+import com.example.myfurniture.service.LogService;
 import com.example.myfurniture.service.ProductService;
-import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@Slf4j
 public class ProductController {
-    @Autowired
-    private ProductService productService;
 
-    @PostMapping("/create")
-    public ApiResponse<ProductResponse> createProduct (@RequestBody @Valid ProductCreationReq productCreationReq) {
-        return ApiResponse.<ProductResponse>builder()
-                .result(productService.createProduct(productCreationReq))
-                .build();
+    @Autowired
+    private ProductService pdService;
+
+
+    @Autowired
+    private LogService logService;
+    @Autowired
+    JWTAuthenticationFilter jwtAuthenticationFilter;
+
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return pdService.getAllProducts();
     }
-    @PostMapping("/all")
-    public ApiResponse<List<ProductResponse>> getAllProduct () {
-        return ApiResponse.<List<ProductResponse>>builder()
-                .result(productService.getAllProduct())
-                .build();
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable Long id) {
+        return pdService.getProductById(id);
+
     }
-    @PostMapping("/update/{productId}")
-    public ApiResponse<ProductResponse> updateProduct (@RequestBody @Valid ProductUpdateReq productUpdateReq, @PathVariable long productId) {
-        return ApiResponse.<ProductResponse>builder()
-                .result(productService.updateProduct(productId,productUpdateReq))
-                .build();
+
+    @PostMapping
+    public ProductResponse createProduct(@RequestBody ProductCreationReq productRequest) {
+        return pdService.createProduct(productRequest);
     }
-    @PostMapping("/delete/{productId}")
-    public ApiResponse<?> deleteProduct (@PathVariable long productId) {
-        try{
-            productService.deleteProduct(productId);
-            return ApiResponse.<UserResponse>builder()
-                    .message("Product deleted")
-                    .build();
-        }catch(Exception e){
-            return ApiResponse.<UserResponse>builder()
-                    .message(e.getMessage())
-                    .build();
-        }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
+            @RequestBody ProductUpdateReq productRequest) {
+        return pdService.updateProduct(id, productRequest).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        boolean isDeleted = pdService.deleteProduct(id);
+        return isDeleted ? "Product deleted successfully" : "Product not found";
+    }
+
 }

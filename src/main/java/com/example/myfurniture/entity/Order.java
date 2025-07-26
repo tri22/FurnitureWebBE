@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,10 +18,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
-    private Date creatAt;
+    private LocalDate orderDate;
     private double price;
     private int quantity;
     private String status;
+    String paymentMethod;
+    String note;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

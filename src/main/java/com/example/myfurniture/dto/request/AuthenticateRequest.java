@@ -1,4 +1,4 @@
-package com.example.myfurniture.dto.resquest;
+package com.example.myfurniture.dto.request;
 
 import lombok.Data;
 

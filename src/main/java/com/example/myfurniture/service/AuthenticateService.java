@@ -1,21 +1,22 @@
 package com.example.myfurniture.service;
 
 import com.example.myfurniture.dto.response.AuthenticateResponse;
-import com.example.myfurniture.dto.resquest.AuthenticateRequest;
+import com.example.myfurniture.dto.request.AuthenticateRequest;
 import com.example.myfurniture.entity.Account;
-import com.example.myfurniture.entity.User;
 import com.example.myfurniture.repository.AccountRepository;
 import com.example.myfurniture.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Encoder;
-
 @Service
 public class AuthenticateService {
+    @Autowired
     private AccountRepository accountRepository;
+    @Autowired
     private JwtService jwtService;
+    @Autowired
     private UserRepository userRepository;
 
     public AuthenticateResponse authenticate(AuthenticateRequest authenticateRequest) {

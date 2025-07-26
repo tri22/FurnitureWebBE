@@ -1,8 +1,8 @@
 package com.example.myfurniture.service;
 
 import com.example.myfurniture.dto.response.UserResponse;
-import com.example.myfurniture.dto.resquest.UserCreationReq;
-import com.example.myfurniture.dto.resquest.UserUpdateReq;
+import com.example.myfurniture.dto.request.UserCreationReq;
+import com.example.myfurniture.dto.request.UserUpdateReq;
 import com.example.myfurniture.entity.User;
 import com.example.myfurniture.mapper.IUserMapper;
 import com.example.myfurniture.repository.UserRepository;
@@ -35,5 +35,9 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    public User getCurrentUser() {
+        return null;
     }
 }

@@ -1,41 +1,55 @@
 package com.example.myfurniture.service;
 
+import com.example.myfurniture.dto.request.ProductCreationReq;
 import com.example.myfurniture.dto.response.ProductResponse;
-import com.example.myfurniture.dto.resquest.ProductCreationReq;
-import com.example.myfurniture.dto.resquest.ProductUpdateReq;
+import com.example.myfurniture.dto.request.ProductUpdateReq;
 import com.example.myfurniture.entity.Product;
-import com.example.myfurniture.exception.ErrorCode;
 import com.example.myfurniture.mapper.IProductMapper;
 import com.example.myfurniture.repository.ProductRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    IProductMapper productMapper;
 
-    public ProductResponse createProduct(ProductCreationReq productCreationReq) {
-        Product product = productMapper.toProduct(productCreationReq);
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private IProductMapper productMapper;
+
+    public List<Product> getAllProducts() {
+        return productRepository.findByDeletedFalse();
+    }
+
+    public Product getProductById(Long id) {
+        Optional<Product> product= productRepository.findById(id);
+        return product.orElse(null);
+    }
+
+    public ProductResponse createProduct(ProductCreationReq productRequest) {
+        Product product = productMapper.toProduct(productRequest);
         return productMapper.toProductResponse(productRepository.save(product));
     }
 
-    public ProductResponse updateProduct(long productId, @Valid ProductUpdateReq productUpdateReq) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException(ErrorCode.PRODUCT_NOT_EXIST.getMessage()));
-        productMapper.updateProduct(product,productUpdateReq);
-        return productMapper.toProductResponse(productRepository.save(product));
+    public Optional<ProductResponse> updateProduct(Long id, ProductUpdateReq productRequest) {
+        return productRepository.findById(id).map(product -> {
+            productMapper.updateProduct(product, productRequest);
+            return productMapper.toProductResponse(productRepository.save(product));
+        });
     }
 
-    public void deleteProduct(long productId) {
-        productRepository.deleteById(productId);
-    }
-
-    public List<ProductResponse> getAllProduct() {
-        return productRepository.findAll().stream().map(e ->productMapper.toProductResponse(e)).toList();
+    public boolean deleteProduct(Long id) {
+        try {
+            Product product = productRepository.findById(id).orElseThrow();
+            product.setDeleted(true);
+            productRepository.save(product);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

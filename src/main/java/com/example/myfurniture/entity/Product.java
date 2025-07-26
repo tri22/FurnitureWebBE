@@ -1,14 +1,15 @@
 package com.example.myfurniture.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "products")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,8 @@ public class Product {
     private Double price;
     private String image;
     private Double rating;
+    @Builder.Default
+    boolean deleted = false;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
