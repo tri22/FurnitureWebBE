@@ -30,12 +30,17 @@ public class ApiEndPoint {
             "/users/delete/{userId}",
 
             // login url
-            "/authenticate/login",
-
+            "/auth/login",
             // Product url
-            "/products",
+            "/products/all",
             "/products/{id}",
-            "/api/payment/vnpay",
-            "/api/payment/vnpay/return",
+
+//            //cart url
+//            "/carts/add-item",
+//            "/carts/delete-item/{cartItemId}",
+//            "/carts/update-item",
+
+            "/vouchers/find/{code}"
+
     };
 }

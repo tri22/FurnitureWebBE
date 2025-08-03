@@ -3,6 +3,7 @@ package com.example.myfurniture.service;
 import com.example.myfurniture.dto.response.AuthenticateResponse;
 import com.example.myfurniture.dto.request.AuthenticateRequest;
 import com.example.myfurniture.entity.Account;
+import com.example.myfurniture.entity.User;
 import com.example.myfurniture.repository.AccountRepository;
 import com.example.myfurniture.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class AuthenticateService {
             return new AuthenticateResponse(null,false,"User not found");
         } else if (passwordEncoder.matches(authenticateRequest.getPassword(), account.getPassword())) {
             String token = jwtService.genToken(account);
-            return  new AuthenticateResponse(token,true,"Login successful!");
+            return  new AuthenticateResponse(token,true,account.getRole().getName());
         }
         return  new AuthenticateResponse(null,false,"Username or password does not match");
     }

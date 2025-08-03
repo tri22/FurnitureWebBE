@@ -16,8 +16,6 @@ public class Role {
     @Id
     private String name;
     private String description;
-    @ManyToMany(mappedBy = "roles")
-    private Set<Account> accounts;
 
     @ManyToMany
     @JoinTable(

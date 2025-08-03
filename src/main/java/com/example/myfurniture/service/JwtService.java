@@ -10,6 +10,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +32,10 @@ public class JwtService {
     public String genToken(Account account) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         List<String> authorities = new ArrayList<>();
-        for (Role role : account.getRoles()) {
-            authorities.add("ROLE_" + role.getName());
-            for (Permission permission : role.getPermissions()) {
-                authorities.add(permission.getName());
-            }
+        Role role =  account.getRole();
+        authorities.add("ROLE_" + role.getName());
+        for (Permission permission : role.getPermissions()) {
+            authorities.add(permission.getName());
         }
 
         String authoritiesStr = String.join(",", authorities);
@@ -88,4 +89,22 @@ public class JwtService {
             return false;
         }
     }
+
+
+    public List<String> extractAuthorities(String token) throws ParseException, JOSEException {
+        JWSObject jwsObject = JWSObject.parse(token);
+        if (!jwsObject.verify(new MACVerifier(signerKey))) {
+            throw new JOSEException("Invalid token");
+        }
+
+        JWTClaimsSet claims = JWTClaimsSet.parse(jwsObject.getPayload().toJSONObject());
+        String authoritiesStr = (String) claims.getClaim("authorities");
+
+        if (authoritiesStr == null || authoritiesStr.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.asList(authoritiesStr.split(","));
+    }
+
 }

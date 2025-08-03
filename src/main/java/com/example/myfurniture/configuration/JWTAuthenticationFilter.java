@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -37,11 +39,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             String username = jwtService.extractUsername(token);
+            List<String> roles = jwtService.extractAuthorities(token);
+            List<SimpleGrantedAuthority> authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
 
             if (jwtService.validateToken(token)) {
                 // Tạo đối tượng Authentication
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username, null, null
+                        username, null, authorities
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -54,13 +60,5 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 
 
-    public User extractUser(HttpServletRequest request) throws ParseException, JOSEException {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            String username = jwtService.extractUsername(token);
-            return userRepository.findUserByAccount_Username(username);
-        }
-        return null;
-    }
+
 }

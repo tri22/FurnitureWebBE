@@ -32,17 +32,14 @@ public class ApplicationInitConfig {
                 Role adminRole = Role.builder()
                         .name("ADMIN")
                         .build();
-                Set<Role> roles = new HashSet<>();
-                roles.add(adminRole);
                 roleRepository.save(adminRole);
                 Account account = Account.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
-                        .roles(roles)
+                        .role(adminRole)
                         .build();
                 User user = User.builder()
                         .account(account)
-
                         .build();
 
                 userRepository.save(user);

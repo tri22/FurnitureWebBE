@@ -9,6 +9,6 @@ import lombok.Data;
 public class AuthenticateResponse {
     private String token;
     private boolean isAuthenticated;
-    private String message;
+    private String role;
 
 }
